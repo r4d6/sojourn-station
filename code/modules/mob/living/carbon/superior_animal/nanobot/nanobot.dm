@@ -50,6 +50,7 @@
 	follow_message = "states, \"Beginning Escort Protocol.\""
 	stop_message = "states, \"Ending Escort Protocol.\""
 	follow_distance = 2
+	var/obj/item/held_item
 	var/list/creator = list() // Who's the bot's creator.
 	var/repair_rate = 0 // How fast does the bot repair itself.
 	var/ai_flag = 0 // Flags for special functions
@@ -109,6 +110,8 @@
 			to_chat(user, SPAN_WARNING("It's wounded."))
 		else if (health < maxHealth)
 			to_chat(user, SPAN_WARNING("It's a bit wounded."))
+	if(held_item)
+		to_chat(user, "[src] is carrying \icon[held_item] \a [held_item].")
 
 /mob/living/carbon/superior_animal/nanobot/death()
 	if(controller) // Is there someone currently controlling the bot when it died?
@@ -118,6 +121,9 @@
 	//We lose are items as not to make them farmable by lonestar when people leave the round/get lost
 	Radio = null
 	Console = null
+	if(held_item) // if the nanobot is holding an item
+		held_item.loc = src.loc
+		held_item = null
 	for(var/internals_items in contents)
 		qdel(internals_items)
 	. = ..()

@@ -12,7 +12,28 @@
 /mob/living/carbon/superior_animal/nanobot/hear_say(var/message, var/verb = "says", var/datum/language/language = null, var/alt_name = "", var/italics = 0, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol, speech_volume)
 	..()
 
-/mob/living/carbon/superior_animal/nanobot/UnarmedAttack(var/mob/living/carbon/human/H, var/proximity)
+/mob/living/carbon/superior_animal/nanobot/UnarmedAttack(var/atom/A, var/proximity)
+	if(client && A.Adjacent(src))
+		if(isitem(A) && !held_item && A.loc != src)
+			var/obj/item/I = A
+			if(I.w_class <= ITEM_SIZE_HUGE)
+				held_item = I
+				held_item.loc = src
+				visible_message(SPAN_NOTICE("[src] scoops up [held_item]."), \
+								SPAN_NOTICE("You grab [held_item]."))
+				return TRUE
+			else
+				return FALSE
+
+		if(isturf(A) && held_item)
+			visible_message(SPAN_NOTICE("[src] drops [held_item]."), \
+							SPAN_NOTICE("You drop [held_item]."))
+			held_item.Move(A)
+			held_item = null
+			return TRUE
+
+	if(istype(A, /mob/living/carbon/human))
+	var/mob/living/carbon/human/H = A
 	if(medbot) // Are we in healing mode?
 		if(H == patient) // Are we "attacking" our patient?
 			var/t = valid_healing_target(H)

@@ -27,8 +27,23 @@ List of powers in this page :
 			Stand.name = bot_name
 			Stand.creator += owner
 			Stand.friends += owner
-			Stand.icon_state = input(owner, "Choose your nanobot's model : ", "Nanobot Model") in list("nanobot", "wide", "squats", "heavy", "blitz")
-			Stand.icon_living = Stand.icon_state
+
+			ChooseSprite
+			var/list/module_sprites = icon_states('icons/mob/nanobot.dmi')
+			var/list/options = list()
+			for(var/i in module_sprites)
+				if(findtext(i, "_dead")
+					continue // skip the death sprites
+				options[i] = image(icon = 'icons/mob/nanobot.dmi', icon_state = module_sprites[i])
+			var/icontype = show_radial_menu(usr, usr, options, radius = 42)
+			if(!icontype)
+				return
+			icon_state = module_sprites[icontype]
+			update_icon()
+
+			if(alert(usr,"Do you like this icon?",null, "No","Yes") == "No")
+				goto ChooseSprite
+
 			Stand.icon_dead = "[Stand.icon_state]_dead"
 
 			//Add Nanobot verbs here, at activation

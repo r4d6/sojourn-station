@@ -64,12 +64,13 @@ SUBSYSTEM_DEF(economy)
 
 		var/datum/computer_file/report/crew_record/R = get_crewmember_record(A.owner_name)
 
-		//Modify their wage based on nepotism modifier
-		var/nepotism = 1
+		//Modify their wage based on nepotism modifier // Now their wage is directly changed at the source by the nepotism. -R4d6
+		/*var/nepotism = 1
 		if(R)
 			nepotism = R.get_nepotismMod()
 
-		var/amount_to_pay = A.debt + (A.wage * nepotism)
+		var/amount_to_pay = A.debt + (A.wage * nepotism)*/
+		var/amount_to_pay = A.debt + A.wage
 
 		if(amount_to_pay <= 0)
 			continue
